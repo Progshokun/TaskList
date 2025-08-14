@@ -128,6 +128,7 @@ function App() {
           +
         </button>
       </div>
+      <Footer />
     </div>
   );
 }
@@ -229,5 +230,17 @@ function TaskItem({ task, deleteTask, completeTask }) {
         </button>
       </div>
     </li>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="footer">
+      <p>
+        Technologies and React concepts used: React, JSX, props, useState,
+        component composition, conditional rendering, array methods (map,
+        filter), event handling.
+      </p>
+    </footer>
   );
 }
