@@ -12,8 +12,17 @@ function App() {
     completedTasks: true,
     taskForm: false,
   });
+  const [curentTime, setCurentTime] = useState(new Date());
+
   const activeTask = sortTask(tasks.filter((task) => !task.completed));
   const completedTask = sortTask(tasks.filter((task) => task.completed));
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurentTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
@@ -101,6 +110,7 @@ function App() {
             deleteTask={deleteTask}
             activeTasks={activeTask}
             completeTask={completeTask}
+            curentTime={curentTime}
           />
         )}
         <button
@@ -135,7 +145,7 @@ function App() {
 
 export default App;
 
-function TasksList({ activeTasks, deleteTask, completeTask }) {
+function TasksList({ activeTasks, deleteTask, completeTask, curentTime }) {
   return (
     <ul className="task-list">
       {activeTasks.map((task) => (
@@ -144,6 +154,7 @@ function TasksList({ activeTasks, deleteTask, completeTask }) {
           task={task}
           deleteTask={deleteTask}
           completeTask={completeTask}
+          isOverDue={curentTime > new Date(task.deadline)}
         />
       ))}
     </ul>
@@ -206,11 +217,15 @@ function TaskForm({ addTask }) {
   );
 }
 
-function TaskItem({ task, deleteTask, completeTask }) {
+function TaskItem({ task, deleteTask, completeTask, isOverDue }) {
   const { title, priority, deadline, id, completed } = task;
 
   return (
-    <li className={`task-item ${priority.toLowerCase()}`}>
+    <li
+      className={`task-item ${priority.toLowerCase()} ${
+        isOverDue ? "overdue" : ""
+      }`}
+    >
       <div className="task-info">
         <div>
           {title} <strong>{priority}</strong>
